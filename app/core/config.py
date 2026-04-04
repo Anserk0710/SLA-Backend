@@ -4,11 +4,26 @@ from urllib.parse import quote_plus
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
+def _normalize_database_url(value: str) -> str:
+    if value.startswith("postgresql+"):
+        return value
+
+    if value.startswith("postgresql://"):
+        return value.replace("postgresql://", "postgresql+psycopg://", 1)
+
+    if value.startswith("postgres://"):
+        return value.replace("postgres://", "postgresql+psycopg://", 1)
+
+    return value
+
+
 class Settings(BaseSettings):
     PROJECT_NAME: str = "SLA"
     API_V1_STR: str = "/api/v1"
 
     SECRET_KEY: str
+    DATABASE_URL: str | None = None
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
@@ -37,13 +52,21 @@ class Settings(BaseSettings):
         return value
 
     @property
-    def DATABASE_URL(self) -> str:
+    def sqlalchemy_database_url(self) -> str:
+        if self.DATABASE_URL:
+            return _normalize_database_url(self.DATABASE_URL)
+
         user = quote_plus(self.POSTGRES_USER)
         password = quote_plus(self.POSTGRES_PASSWORD)
         return (
             f"postgresql+psycopg://{user}:{password}@"
             f"{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
+
+    @property
+    def uses_supabase_transaction_pooler(self) -> bool:
+        database_url = self.sqlalchemy_database_url
+        return "pooler.supabase.com:6543" in database_url
     
     @property
     def cors_origins_list(self) -> list[str]:

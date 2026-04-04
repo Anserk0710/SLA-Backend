@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "*.py": {
+      "excludeFiles": "{tests/**,.venv/**,alembic/**,__pycache__/**,.pytest_cache/**}"
+    }
+  }
+}
