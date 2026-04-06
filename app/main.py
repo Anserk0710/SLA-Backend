@@ -9,20 +9,11 @@ from app.db.init_db import init_db
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
+fastapi_app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+fastapi_app.include_router(api_router, prefix=settings.API_V1_STR)
 
-app.include_router(api_router, prefix=settings.API_V1_STR)
-
-
-@app.on_event("startup")
+@fastapi_app.on_event("startup")
 def on_startup() -> None:
     try:
         summary = init_db()
@@ -38,10 +29,19 @@ def on_startup() -> None:
         logger.exception("Startup init_db failed")
         raise
 
-@app.get("/")
+@fastapi_app.get("/")
 def root():
     return {"message": "Selamat datang di API SLA!"}
 
-@app.get("/health")
+@fastapi_app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+# Wrap the whole app so CORS headers are still present on error responses.
+app = CORSMiddleware(
+    app=fastapi_app,
+    allow_origins=settings.cors_origins_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
