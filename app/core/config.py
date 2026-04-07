@@ -1,4 +1,6 @@
 from functools import lru_cache
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 from urllib.parse import quote_plus
 
 from pydantic import field_validator
@@ -19,6 +21,11 @@ def _normalize_database_url(value: str) -> str:
 
 
 class Settings(BaseSettings):
+    if TYPE_CHECKING:
+        # Nilai settings dimuat dari env/.env saat runtime.
+        # Stub ini membantu static type checker agar Settings() valid.
+        def __init__(self, **values: Any) -> None: ...
+
     PROJECT_NAME: str = "SLA"
     API_V1_STR: str = "/api/v1"
 
@@ -38,8 +45,16 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_EMAIL: str = "admin@example.com"
     FIRST_SUPERUSER_PASSWORD: str = "admin123"
 
+    CLOUDINARY_CLOUD_NAME: str = "dkgxoiwtl"
+    CLOUDINARY_API_KEY: str = "389353841874536"
+    CLOUDINARY_API_SECRET: str = "LXb1UiXu9VeT6d-RBasZWBK9cjI"
+    CLOUDINARY_FOLDER: str = "ticketting"
+
+    MAX_IMAGE_UPLOAD_MB: int = 10
+    MAX_VIDEO_UPLOAD_MB: int = 100
+
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=Path(__file__).resolve().parents[2] / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
     )

@@ -1,11 +1,21 @@
+from __future__ import annotations
+
 from uuid import uuid4
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.constants import TicketStatus
 from app.db.base_class import Base
+
+if TYPE_CHECKING:
+    from app.models.ticket_assignment import TicketAssignment
+    from app.models.ticket_checkin import TicketCheckIn
+    from app.models.ticket_resolution import TicketResolution
+    from app.models.ticket_status_log import TicketStatusLog
+    from app.models.user import User
 
 
 class Ticket(Base):
@@ -36,6 +46,27 @@ class Ticket(Base):
         onupdate=func.now(),
     )
 
-    assignments = relationship("TicketAssignment", back_populates="ticket", cascade="all, delete-orphan")
-    status_logs = relationship("TicketStatusLog", back_populates="ticket", cascade="all, delete-orphan")
-    responded_by = relationship("User", foreign_keys=[responded_by_user_id])
+    assignments: Mapped[list[TicketAssignment]] = relationship(
+        "TicketAssignment",
+        back_populates="ticket",
+        cascade="all, delete-orphan",
+    )
+    checkins: Mapped[list[TicketCheckIn]] = relationship(
+        "TicketCheckIn",
+        back_populates="ticket",
+        cascade="all, delete-orphan",
+    )
+    resolution: Mapped[list[TicketResolution]] = relationship(
+        "TicketResolution",
+        back_populates="ticket",
+        cascade="all, delete-orphan",
+    )
+    status_logs: Mapped[list[TicketStatusLog]] = relationship(
+        "TicketStatusLog",
+        back_populates="ticket",
+        cascade="all, delete-orphan",
+    )
+    responded_by: Mapped[User | None] = relationship(
+        "User",
+        foreign_keys=[responded_by_user_id],
+    )
