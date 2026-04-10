@@ -53,6 +53,10 @@ class Settings(BaseSettings):
     MAX_IMAGE_UPLOAD_MB: int = 10
     MAX_VIDEO_UPLOAD_MB: int = 100
 
+    GEOAPIFY_REVERSE_GEOCODE_URL: str = "https://api.geoapify.com/v1/geocode/reverse"
+    GEOAPIFY_API_KEY: str = ""
+    GEOAPIFY_LANG: str = "id"
+
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parents[2] / ".env",
         env_file_encoding="utf-8",

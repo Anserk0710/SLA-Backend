@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, require_roles
@@ -8,9 +8,11 @@ from app.models.user import User
 from app.schemas.technician import (
     TechnicianActionResponse,
     TechnicianAssignedTicketResponse,
+    TechnicianReverseGeocodeResponse,
     TechnicianTicketDetailResponse,
 )
 from app.services.cloudinary_service import upload_checkin_photo, upload_resolution_video
+from app.services.location_service import reverse_geocode_location
 from app.services.technician_service import (
     get_assigned_ticket_detail,
     list_assigned_tickets,
@@ -20,6 +22,18 @@ from app.services.technician_service import (
 from app.utils.file_upload import validate_image_file, validate_video_file
 
 router = APIRouter(prefix="/technician", tags=["technician"])
+
+
+@router.get("/location/reverse-geocode", response_model=TechnicianReverseGeocodeResponse)
+def reverse_geocode_current_location(
+    latitude: float = Query(..., ge=-90, le=90),
+    longitude: float = Query(..., ge=-180, le=180),
+    current_user: User = Depends(require_roles(RoleName.TECHNICIAN.value)),
+):
+    try:
+        return reverse_geocode_location(latitude, longitude)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
 
 
 @router.get("/tickets/assigned", response_model=list[TechnicianAssignedTicketResponse])

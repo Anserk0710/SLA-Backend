@@ -64,5 +64,11 @@ class TechnicianActionResponse(BaseModel):
     public_status: str
 
 
+class TechnicianReverseGeocodeResponse(BaseModel):
+    latitude: float
+    longitude: float
+    full_address: str
+
+
 class ResolutionFormData(BaseModel):
     resolution_note: str = Field(..., min_length=3, max_length=2000)
