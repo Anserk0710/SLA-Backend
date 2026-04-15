@@ -12,6 +12,8 @@ class TechnicianAssignedTicketResponse(BaseModel):
     phone_number: str
     internal_status: str
     public_status: str
+    sla_deadline: datetime | None = None
+    is_sla_breached: bool = False
     created_at: datetime
     has_checkin: bool
     has_resolution: bool
@@ -53,6 +55,8 @@ class TechnicianTicketDetailResponse(BaseModel):
     phone_number: str
     internal_status: str
     public_status: str
+    sla_deadline: datetime | None = None
+    is_sla_breached: bool = False
     created_at: datetime
     checkin: TechnicianCheckInRead | None = None
     resolution: TechnicianResolutionRead | None = None

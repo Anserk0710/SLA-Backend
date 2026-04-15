@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from datetime import datetime
 from uuid import uuid4
 
-from datetime import datetime
 from typing import TYPE_CHECKING
-from sqlalchemy import DateTime, ForeignKey, String, Text, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.constants import TicketStatus
@@ -34,6 +34,8 @@ class Ticket(Base):
     internal_status: Mapped[str] = mapped_column(String(50), default=TicketStatus.NEW.value, index=True)
     public_status: Mapped[str] = mapped_column(String(50), default="Dalam Antrian")
     intial_respons: Mapped[str | None] = mapped_column(Text, nullable=True)
+    sla_deadline: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    is_sla_breached: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, index=True)
     responded_by_user_id: Mapped[str | None] = mapped_column(String(36), ForeignKey("users.id"), nullable=True)
     responded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 

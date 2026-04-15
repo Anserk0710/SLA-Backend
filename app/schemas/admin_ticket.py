@@ -26,6 +26,7 @@ class DashboardSummaryResponse(BaseModel):
     sudah_direspon: int
     on_progress: int
     selesai: int
+    sla_breached: int
 
 class TicketListItemResponse(BaseModel):
     id: str
@@ -36,6 +37,8 @@ class TicketListItemResponse(BaseModel):
     phone_number: str
     internal_status: str
     public_status: str
+    sla_deadline: datetime | None = None
+    is_sla_breached: bool = False
     created_at: datetime
     assigned_technicians: list[AssignedTechnicianRead] = []
 

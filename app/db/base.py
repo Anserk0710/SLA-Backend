@@ -6,6 +6,8 @@ from app.models.ticket_assignment import TicketAssignment
 from app.models.ticket_status_log import TicketStatusLog
 from app.models.ticket_checkin import TicketCheckIn
 from app.models.ticket_resolution import TicketResolution
+from app.models.sla_policy import SLAPolicy
+from app.models.notification import Notification
 
 __all__ = [
     "Base",
@@ -16,4 +18,6 @@ __all__ = [
     "TicketStatusLog",
     "TicketCheckIn",
     "TicketResolution",
+    "SLAPolicy",
+    "Notification",
 ]

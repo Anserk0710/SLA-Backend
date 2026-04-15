@@ -3,12 +3,14 @@ from datetime import datetime, timezone
 from sqlalchemy import delete, func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.core.constants import RoleName, TicketStatus
+from app.core.constants import NOTIFICATION_TYPE_TICKET, RoleName, TicketStatus
 from app.models.role import Role
 from app.models.ticket import Ticket
 from app.models.ticket_assignment import TicketAssignment
 from app.models.ticket_status_log import TicketStatusLog
 from app.models.user import User
+from app.services.notification_service import create_notifications_for_user_ids
+from app.services.sla_service import refresh_ticket_sla_state
 from app.services.ticket_service import get_public_status_from_internal
 
 
@@ -68,6 +70,8 @@ def serialize_status_logs(ticket: Ticket) -> list[dict]:
 
 
 def serialize_ticket_list_item(ticket: Ticket) -> dict:
+    refresh_ticket_sla_state(ticket)
+
     return {
         "id": ticket.id,
         "ticket_code": ticket.ticket_code,
@@ -77,6 +81,8 @@ def serialize_ticket_list_item(ticket: Ticket) -> dict:
         "phone_number": ticket.phone_number,
         "internal_status": ticket.internal_status,
         "public_status": ticket.public_status,
+        "sla_deadline": ticket.sla_deadline,
+        "is_sla_breached": ticket.is_sla_breached,
         "created_at": ticket.created_at,
         "assigned_technicians": serialize_assigned_technicians(ticket),
     }
@@ -303,3 +309,12 @@ def assign_ticket_technicians(
     )
 
     db.commit()
+
+    create_notifications_for_user_ids(
+        db=db,
+        user_ids=[technician.id for technician in technicians],
+        title="Ticket di-assign ke Anda",
+        message=f"Ticket {ticket.ticket_code} telah di-assign ke Anda.",
+        notification_type=NOTIFICATION_TYPE_TICKET,
+        ticket_id=ticket.id,
+    )

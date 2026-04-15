@@ -15,6 +15,9 @@ class TicketStatus(str, Enum):
     CLOSED = "closed"
     REJECTED = "rejected"
 
+NOTIFICATION_TYPE_INFO = "INFO"
+NOTIFICATION_TYPE_TICKET = "TICKET"
+NOTIFICATION_TYPE_SLA = "SLA"
 
 def coerce_ticket_status(value: str | TicketStatus) -> TicketStatus | None:
     if isinstance(value, TicketStatus):

@@ -3,13 +3,15 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from app.core.constants import TicketStatus
+from app.core.constants import NOTIFICATION_TYPE_TICKET, RoleName, TicketStatus
 from app.models.ticket import Ticket
 from app.models.ticket_assignment import TicketAssignment
 from app.models.ticket_checkin import TicketCheckIn
 from app.models.ticket_resolution import TicketResolution
 from app.models.ticket_status_log import TicketStatusLog
 from app.models.user import User
+from app.services.notification_service import create_notifications_for_roles
+from app.services.sla_service import refresh_ticket_sla_state
 from app.services.ticket_service import get_public_status_from_internal
 
 
@@ -84,6 +86,8 @@ def list_assigned_tickets(db: Session, current_user: User) -> list[dict]:
 
     result: list[dict] = []
     for ticket in tickets:
+        refresh_ticket_sla_state(ticket)
+
         checkin = next(
             (item for item in ticket.checkins if item.technician_user_id == current_user.id),
             None,
@@ -103,6 +107,8 @@ def list_assigned_tickets(db: Session, current_user: User) -> list[dict]:
                 "phone_number": ticket.phone_number,
                 "internal_status": ticket.internal_status,
                 "public_status": ticket.public_status,
+                "sla_deadline": ticket.sla_deadline,
+                "is_sla_breached": ticket.is_sla_breached,
                 "created_at": ticket.created_at,
                 "has_checkin": checkin is not None,
                 "has_resolution": resolution is not None,
@@ -114,6 +120,7 @@ def list_assigned_tickets(db: Session, current_user: User) -> list[dict]:
 
 def get_assigned_ticket_detail(db: Session, ticket_id: str, current_user: User) -> dict:
     ticket = _ensure_ticket_assigned_to_technician(db, ticket_id, current_user.id)
+    refresh_ticket_sla_state(ticket)
 
     checkin = next(
         (item for item in ticket.checkins if item.technician_user_id == current_user.id),
@@ -135,6 +142,8 @@ def get_assigned_ticket_detail(db: Session, ticket_id: str, current_user: User) 
         "phone_number": ticket.phone_number,
         "internal_status": ticket.internal_status,
         "public_status": ticket.public_status,
+        "sla_deadline": ticket.sla_deadline,
+        "is_sla_breached": ticket.is_sla_breached,
         "created_at": ticket.created_at,
         "checkin": (
             {
@@ -317,6 +326,15 @@ def submit_resolution(
 
     db.commit()
     db.refresh(ticket)
+
+    create_notifications_for_roles(
+        db=db,
+        role_names=[RoleName.ADMIN.value, RoleName.HEAD.value],
+        title="Ticket selesai dikerjakan",
+        message=f"Ticket {ticket.ticket_code} telah diselesaikan teknisi.",
+        notification_type=NOTIFICATION_TYPE_TICKET,
+        ticket_id=ticket.id,
+    )
 
     return {
         "message": "Bukti selesai berhasil disimpan",

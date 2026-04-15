@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from sqlalchemy.orm import Session
 
 from app.core.constants import TicketStatus
@@ -35,3 +37,30 @@ def test_track_public_ticket_maps_uppercase_internal_status(db_session: Session)
     assert result is not None
     assert result.internal_status == TicketStatus.RESPONDED.value
     assert result.public_status == "Sudah Ditanggapi"
+
+
+def test_track_public_ticket_updates_sla_breach_state(db_session: Session) -> None:
+    ticket = Ticket(
+        ticket_code="TCK-TRACKING-SLA",
+        full_name="Citra Lestari",
+        full_address="Jl. Kenanga No. 7 Jakarta Selatan",
+        category="Critical",
+        description="Layanan mati total dan perlu penanganan segera dari tim teknis.",
+        pic_name="Citra",
+        phone_number="081277788899",
+        internal_status=TicketStatus.ASSIGNED.value,
+        public_status="Sedang Dikerjakan",
+        sla_deadline=datetime(2020, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        is_sla_breached=False,
+    )
+    db_session.add(ticket)
+    db_session.commit()
+
+    result = track_public_ticket(
+        db=db_session,
+        ticket_code=ticket.ticket_code,
+        phone_number=ticket.phone_number,
+    )
+
+    assert result is not None
+    assert result.is_sla_breached is True

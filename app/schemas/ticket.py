@@ -33,6 +33,8 @@ class PublicTicketTrackingResponse(BaseModel):
     category: str
     public_status: str
     internal_status: str
+    sla_deadline: datetime | None = None
+    is_sla_breached: bool = False
     created_at: datetime
     updated_at: datetime
 

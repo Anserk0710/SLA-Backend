@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from datetime import date
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status as http_status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, require_roles
@@ -14,22 +16,42 @@ from app.schemas.admin_ticket import (
 from app.services.admin_ticket_service import (
     assign_ticket_technicians,
     get_ticket_detail,
-    list_tickets,
-    respond_ticket
+    respond_ticket,
+    serialize_ticket_list_item,
 )
+from app.services.ticket_service import get_ticket_list as get_filtered_ticket_list
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
 
+
 @router.get("", response_model=list[TicketListItemResponse])
-def get_ticket_list(
-    status_filter: str | None = Query(None, alias="status"),
+def list_tickets_endpoint(
+    status_filter: str | None = Query(default=None, alias="status"),
+    category: str | None = Query(default=None),
+    date_from: date | None = Query(default=None),
+    date_to: date | None = Query(default=None),
+    technician_id: str | None = Query(default=None),
     q: str | None = Query(None),
+    skip: int = Query(default=0),
+    limit: int = Query(default=20),
     db: Session = Depends(get_db),
-    current_user: User = Depends(
+    _current_user: User = Depends(
         require_roles(RoleName.ADMIN.value, RoleName.HEAD.value)
     ),
 ):
-    return list_tickets(db=db, status=status_filter, q=q)
+    tickets = get_filtered_ticket_list(
+        db=db,
+        status=status_filter,
+        category=category,
+        date_from=date_from,
+        date_to=date_to,
+        technician_id=technician_id,
+        q=q,
+        skip=skip,
+        limit=limit,
+    )
+    return [serialize_ticket_list_item(ticket) for ticket in tickets]
+
 
 @router.get("/{ticket_id}", response_model=TicketDetailResponse)
 def get_ticket_detail_by_id(
@@ -47,7 +69,9 @@ def get_ticket_detail_by_id(
     return ticket
 
 @router.post(
-    "/{ticket_id}/respond", response_model=ActionMessageResponse, status_code=status.HTTP_200_OK
+    "/{ticket_id}/respond",
+    response_model=ActionMessageResponse,
+    status_code=http_status.HTTP_200_OK,
 )
 def respond_ticket_endpoint(
     ticket_id: str,
@@ -75,7 +99,7 @@ def respond_ticket_endpoint(
 @router.post(
     "/{ticket_id}/assign",
     response_model=ActionMessageResponse,
-    status_code=status.HTTP_200_OK,
+    status_code=http_status.HTTP_200_OK,
 )
 def assign_ticket_endpoint(
     ticket_id: str,
