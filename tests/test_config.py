@@ -67,3 +67,21 @@ def test_settings_reject_short_jwt_secret(monkeypatch: pytest.MonkeyPatch) -> No
 
     with pytest.raises(ValidationError, match="JWT_SECRET_KEY harus minimal 32 karakter"):
         Settings(_env_file=None)
+
+
+def test_settings_normalize_postgres_url(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("JWT_SECRET_KEY", "x" * 32)
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgres://user:pass@db.prisma.io:5432/postgres?sslmode=require",
+    )
+    monkeypatch.setenv("STORAGE_BACKEND", "vercel_blob")
+    monkeypatch.setenv("BLOB_READ_WRITE_TOKEN", "blob-token")
+
+    settings = Settings(_env_file=None)
+
+    assert (
+        settings.database_url
+        == "postgresql+psycopg://user:pass@db.prisma.io:5432/postgres?sslmode=require"
+    )
+    assert settings.STORAGE_BACKEND == "vercel_blob"

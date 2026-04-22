@@ -33,6 +33,7 @@ class TicketListItemResponse(BaseModel):
     ticket_code: str
     full_name: str
     category: str
+    item_name: str
     pic_name: str
     phone_number: str
     internal_status: str

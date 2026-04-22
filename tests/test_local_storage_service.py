@@ -144,3 +144,103 @@ def test_delete_uploaded_file_removes_saved_file_and_empty_parent_dirs(
     assert not target_file.exists()
     assert not target_dir.exists()
     assert upload_dir.exists()
+
+
+@pytest.mark.anyio
+async def test_upload_checkin_photo_routes_to_vercel_blob_backend(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: dict[str, str | None] = {}
+
+    async def fake_upload_to_vercel_blob(
+        file: UploadFile,
+        *,
+        folder: str,
+        resource_type: str | None = None,
+    ) -> dict[str, str]:
+        captured["folder"] = folder
+        captured["resource_type"] = resource_type
+        captured["filename"] = file.filename
+        return {
+            "public_id": "checkins/2026/04/22/test.jpg",
+            "secure_url": "https://example.public.blob.vercel-storage.com/checkins/2026/04/22/test.jpg",
+            "resource_type": "image",
+            "format": "jpg",
+            "bytes": "10",
+        }
+
+    monkeypatch.setattr(
+        local_storage_service,
+        "settings",
+        SimpleNamespace(
+            STORAGE_BACKEND="vercel_blob",
+            blob_read_write_token="token",
+        ),
+    )
+    monkeypatch.setattr(
+        local_storage_service,
+        "_save_uploaded_file_to_vercel_blob",
+        fake_upload_to_vercel_blob,
+    )
+
+    file = _build_upload_file("arrival.jpg", b"image-bytes", "image/jpeg")
+
+    result = await local_storage_service.upload_checkin_photo(file)
+
+    assert captured == {
+        "folder": "checkins",
+        "resource_type": "image",
+        "filename": "arrival.jpg",
+    }
+    assert result["resource_type"] == "image"
+
+
+@pytest.mark.anyio
+async def test_upload_resolution_video_routes_to_cloudinary_backend(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: dict[str, str | None] = {}
+
+    async def fake_upload_to_cloudinary(
+        file: UploadFile,
+        *,
+        folder: str,
+        resource_type: str | None = None,
+    ) -> dict[str, str]:
+        captured["folder"] = folder
+        captured["resource_type"] = resource_type
+        captured["filename"] = file.filename
+        return {
+            "public_id": "ticketting/resolutions/test.mp4",
+            "secure_url": "https://res.cloudinary.com/example/video/upload/test.mp4",
+            "resource_type": "video",
+            "format": "mp4",
+            "bytes": "10",
+        }
+
+    monkeypatch.setattr(
+        local_storage_service,
+        "settings",
+        SimpleNamespace(
+            STORAGE_BACKEND="cloudinary",
+            cloudinary_api_key=None,
+            cloudinary_api_secret=None,
+            CLOUDINARY_CLOUD_NAME=None,
+        ),
+    )
+    monkeypatch.setattr(
+        local_storage_service,
+        "_save_uploaded_file_to_cloudinary",
+        fake_upload_to_cloudinary,
+    )
+
+    file = _build_upload_file("resolution.mp4", b"video-bytes", "video/mp4")
+
+    result = await local_storage_service.upload_resolution_video(file)
+
+    assert captured == {
+        "folder": "resolutions",
+        "resource_type": "video",
+        "filename": "resolution.mp4",
+    }
+    assert result["resource_type"] == "video"

@@ -8,6 +8,7 @@ class TechnicianAssignedTicketResponse(BaseModel):
     ticket_code: str
     full_name: str
     category: str
+    item_name: str
     pic_name: str
     phone_number: str
     internal_status: str
@@ -50,6 +51,7 @@ class TechnicianTicketDetailResponse(BaseModel):
     full_name: str
     full_address: str
     category: str
+    item_name: str
     description: str
     pic_name: str
     phone_number: str

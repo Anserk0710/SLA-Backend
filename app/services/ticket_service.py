@@ -81,6 +81,7 @@ def build_ticket_filtered_query(
                 Ticket.ticket_code.ilike(keyword),
                 Ticket.full_name.ilike(keyword),
                 Ticket.category.ilike(keyword),
+                Ticket.item_name.ilike(keyword),
                 Ticket.pic_name.ilike(keyword),
             )
         )
@@ -133,6 +134,7 @@ def create_public_ticket(db: Session, payload: PublicTicketCreate) -> Ticket:
         full_name=payload.full_name.strip(),
         full_address=payload.full_address.strip(),
         category=category,
+        item_name=payload.item_name.strip(),
         description=payload.description.strip(),
         pic_name=payload.pic_name.strip(),
         phone_number=normalize_phone_number(payload.phone_number),

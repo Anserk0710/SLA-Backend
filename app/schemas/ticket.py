@@ -6,6 +6,7 @@ class PublicTicketCreate(BaseModel):
     full_name: str = Field(..., min_length=3, max_length=150)
     full_address: str = Field(..., min_length=10, max_length=255)
     category: str = Field(..., min_length=3, max_length=50)
+    item_name: str = Field(..., min_length=3, max_length=150)
     description: str = Field(..., min_length=10, max_length=2000)
     pic_name: str = Field(..., min_length=3, max_length=150)
     phone_number: str = Field(..., min_length=8, max_length=30)
@@ -31,6 +32,7 @@ class PublicTicketTrackingResponse(BaseModel):
     ticket_code: str
     full_name: str
     category: str
+    item_name: str
     public_status: str
     internal_status: str
     sla_deadline: datetime | None = None

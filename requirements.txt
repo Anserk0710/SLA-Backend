@@ -11,6 +11,7 @@ python-multipart
 pytest
 httpx
 cloudinary
+vercel
 openpyxl
 pymysql
 cryptography

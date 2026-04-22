@@ -86,6 +86,7 @@ def test_create_public_ticket_assigns_sla_deadline(db_session: Session, monkeypa
         full_name="Rahmat Hidayat",
         full_address="Jl. Anggrek No. 99 Bandung",
         category="Critical",
+        item_name="Server Aplikasi",
         description="Layanan tidak bisa diakses sejak pagi dan perlu ditindaklanjuti.",
         pic_name="Rahmat",
         phone_number="081234567899",

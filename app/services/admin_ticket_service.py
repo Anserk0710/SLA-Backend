@@ -77,6 +77,7 @@ def serialize_ticket_list_item(ticket: Ticket) -> dict:
         "ticket_code": ticket.ticket_code,
         "full_name": ticket.full_name,
         "category": ticket.category,
+        "item_name": ticket.item_name,
         "pic_name": ticket.pic_name,
         "phone_number": ticket.phone_number,
         "internal_status": ticket.internal_status,
@@ -150,6 +151,7 @@ def list_tickets(db: Session, status: str | None = None, q: str | None = None) -
                 Ticket.ticket_code.ilike(keyword),
                 Ticket.full_name.ilike(keyword),
                 Ticket.category.ilike(keyword),
+                Ticket.item_name.ilike(keyword),
                 Ticket.pic_name.ilike(keyword),
             )
         )

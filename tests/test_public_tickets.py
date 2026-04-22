@@ -34,6 +34,7 @@ def test_create_ticket_endpoint_creates_notifications_for_admin_and_head(
             "full_name": "Rahmat Hidayat",
             "full_address": "Jl. Anggrek No. 99 Bandung",
             "category": "Critical",
+            "item_name": "Router Mikrotik",
             "description": "Layanan tidak bisa diakses sejak pagi dan perlu ditindaklanjuti.",
             "pic_name": "Rahmat",
             "phone_number": "081234567899",

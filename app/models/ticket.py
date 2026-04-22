@@ -27,6 +27,7 @@ class Ticket(Base):
     full_name: Mapped[str] = mapped_column(String(150))
     full_address: Mapped[str] = mapped_column(Text)
     category: Mapped[str] = mapped_column(String(100), index=True)
+    item_name: Mapped[str] = mapped_column(String(150), default="")
     description: Mapped[str] = mapped_column(Text)
     pic_name: Mapped[str] = mapped_column(String(150))
     phone_number: Mapped[str] = mapped_column(String(30), index=True)

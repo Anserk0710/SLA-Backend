@@ -110,6 +110,8 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: SecretStr | None = None
     CLOUDINARY_API_SECRET: SecretStr | None = None
     CLOUDINARY_FOLDER: str = "ticketting"
+    BLOB_READ_WRITE_TOKEN: SecretStr | None = None
+    BLOB_ACCESS: str = "public"
 
     GEOAPIFY_REVERSE_GEOCODE_URL: str = "https://api.geoapify.com/v1/geocode/reverse"
     GEOAPIFY_API_KEY: str = ""
@@ -124,6 +126,7 @@ class Settings(BaseSettings):
         "PUBLIC_ROOT_DIR",
         "UPLOAD_DIR",
         "LOG_DIR",
+        "BLOB_ACCESS",
         mode="before",
     )
     @classmethod
@@ -135,6 +138,7 @@ class Settings(BaseSettings):
         "MYSQL_PASSWORD",
         "CLOUDINARY_API_KEY",
         "CLOUDINARY_API_SECRET",
+        "BLOB_READ_WRITE_TOKEN",
         mode="before",
     )
     @classmethod
@@ -193,9 +197,18 @@ class Settings(BaseSettings):
     @classmethod
     def validate_storage_backend(cls, value: str) -> str:
         normalized = value.strip().lower()
-        allowed = {"local", "cloudinary"}
+        allowed = {"local", "cloudinary", "vercel_blob"}
         if normalized not in allowed:
-            raise ValueError("STORAGE_BACKEND harus salah satu dari local atau cloudinary")
+            raise ValueError("STORAGE_BACKEND harus salah satu dari local, cloudinary, atau vercel_blob")
+        return normalized
+
+    @field_validator("BLOB_ACCESS")
+    @classmethod
+    def validate_blob_access(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        allowed = {"public", "private"}
+        if normalized not in allowed:
+            raise ValueError("BLOB_ACCESS harus salah satu dari public atau private")
         return normalized
 
     @field_validator("LOG_LEVEL")
@@ -248,6 +261,12 @@ class Settings(BaseSettings):
         if self.CLOUDINARY_API_SECRET is None:
             return None
         return self.CLOUDINARY_API_SECRET.get_secret_value()
+
+    @property
+    def blob_read_write_token(self) -> str | None:
+        if self.BLOB_READ_WRITE_TOKEN is None:
+            return None
+        return self.BLOB_READ_WRITE_TOKEN.get_secret_value()
 
     @property
     def mysql_password(self) -> str | None:
