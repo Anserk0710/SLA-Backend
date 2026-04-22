@@ -62,19 +62,38 @@ Variabel yang digunakan:
 
 | Variable | Keterangan |
 | --- | --- |
-| `PROJECT_NAME` | Nama aplikasi FastAPI |
-| `API_V1_STR` | Prefix endpoint API, default `/api/v1` |
-| `SECRET_KEY` | Kunci JWT, minimal 32 karakter |
+| `APP_NAME` | Nama aplikasi FastAPI |
+| `API_V1_PREFIX` | Prefix endpoint API, default `/api/v1` |
+| `ENVIRONMENT` | Environment aktif: `development`, `staging`, `production` |
+| `DEBUG` | Mengaktifkan debug mode FastAPI |
+| `JWT_SECRET_KEY` | Kunci JWT, minimal 32 karakter |
+| `DATABASE_URL` | Connection string PostgreSQL penuh, opsional jika memakai `POSTGRES_*` |
 | `ALGORITHM` | Algoritma JWT, default `HS256` |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | Masa berlaku token login |
+| `CORS_ORIGINS` | Origin frontend yang diizinkan |
+| `ALLOWED_HOSTS` | Host header yang diizinkan |
+| `LOG_LEVEL` | Level logging aplikasi |
+| `LOG_DIR` | Folder output log |
+| `PUBLIC_FORM_RATE_LIMIT` | Batas request public form per window |
+| `PUBLIC_FORM_RATE_WINDOW_SECONDS` | Durasi window rate limit public form |
+| `MAX_IMAGE_UPLOAD_MB` | Batas ukuran upload gambar |
+| `MAX_VIDEO_UPLOAD_MB` | Batas ukuran upload video |
 | `POSTGRES_SERVER` | Host PostgreSQL |
 | `POSTGRES_USER` | Username PostgreSQL |
 | `POSTGRES_PASSWORD` | Password PostgreSQL |
 | `POSTGRES_PORT` | Port PostgreSQL |
 | `POSTGRES_DB` | Nama database |
-| `CORS_ORIGINS` | Origin frontend yang diizinkan |
 | `FIRST_SUPERUSER_EMAIL` | Email admin awal |
 | `FIRST_SUPERUSER_PASSWORD` | Password admin awal |
+| `CLOUDINARY_CLOUD_NAME` | Nama cloud Cloudinary |
+| `CLOUDINARY_API_KEY` | API key Cloudinary |
+| `CLOUDINARY_API_SECRET` | API secret Cloudinary |
+| `CLOUDINARY_FOLDER` | Folder upload Cloudinary |
+| `GEOAPIFY_REVERSE_GEOCODE_URL` | Endpoint reverse geocoding |
+| `GEOAPIFY_API_KEY` | API key Geoapify |
+| `GEOAPIFY_LANG` | Bahasa hasil reverse geocoding |
+
+Backend masih menerima nama lama `PROJECT_NAME`, `API_V1_STR`, dan `SECRET_KEY` untuk kompatibilitas, tetapi nama baru di atas yang sebaiknya dipakai mulai sekarang.
 
 ### 3. Jalankan PostgreSQL
 
@@ -105,11 +124,11 @@ Saat aplikasi startup, fungsi `init_db()` akan memastikan role dan user default 
 
 | Role | Email | Password |
 | --- | --- | --- |
-| `admin` | `admin@example.com` | `admin123` |
+| `admin` | sesuai `FIRST_SUPERUSER_EMAIL` | sesuai `FIRST_SUPERUSER_PASSWORD` |
 | `head` | `head@example.com` | `head123` |
 | `technician` | `technician@example.com` | `technician123` |
 
-Nilai untuk akun admin bisa diubah melalui `FIRST_SUPERUSER_EMAIL` dan `FIRST_SUPERUSER_PASSWORD` pada file `.env`.
+Nilai untuk akun admin dikontrol oleh `FIRST_SUPERUSER_EMAIL` dan `FIRST_SUPERUSER_PASSWORD` pada file `.env`. File `.env.example` sengaja memakai placeholder agar secret tidak ikut tersebar.
 
 ## Endpoint Penting
 
@@ -176,12 +195,15 @@ Minimal variable yang perlu diisi:
 
 | Variable | Wajib | Keterangan |
 | --- | --- | --- |
-| `SECRET_KEY` | Ya | Minimal 32 karakter |
+| `JWT_SECRET_KEY` | Ya | Minimal 32 karakter |
 | `DATABASE_URL` | Ya untuk deploy cloud | Connection string PostgreSQL penuh |
-| `API_V1_STR` | Opsional | Default `/api/v1` |
+| `API_V1_PREFIX` | Opsional | Default `/api/v1` |
+| `ENVIRONMENT` | Ya | Gunakan `production` saat live |
+| `DEBUG` | Opsional | Default `false` |
 | `ALGORITHM` | Opsional | Default `HS256` |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | Opsional | Default `30` |
 | `CORS_ORIGINS` | Ya | Origin frontend yang diizinkan |
+| `ALLOWED_HOSTS` | Ya | Domain backend yang valid |
 | `FIRST_SUPERUSER_EMAIL` | Ya | Admin awal |
 | `FIRST_SUPERUSER_PASSWORD` | Ya | Password admin awal |
 

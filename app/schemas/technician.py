@@ -66,6 +66,7 @@ class TechnicianActionResponse(BaseModel):
     message: str
     internal_status: str
     public_status: str
+    file_url: str | None = None
 
 
 class TechnicianReverseGeocodeResponse(BaseModel):

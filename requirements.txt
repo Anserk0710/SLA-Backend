@@ -12,3 +12,6 @@ pytest
 httpx
 cloudinary
 openpyxl
+pymysql
+cryptography
+a2wsgi

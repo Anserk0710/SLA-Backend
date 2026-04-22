@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, require_roles
+from app.api.deps import get_db
 from app.core.constants import RoleName
+from app.core.permissions import require_roles
 from app.models.user import User
 from app.services.report_service import generate_ticket_report_xlsx
 

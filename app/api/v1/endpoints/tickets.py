@@ -3,8 +3,13 @@ from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, Query, status as http_status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, require_roles
+from app.api.deps import get_current_active_user, get_db
 from app.core.constants import RoleName
+from app.core.permissions import (
+    ensure_assign_permission,
+    ensure_ticket_visible_to_user,
+    require_roles,
+)
 from app.models.user import User
 from app.schemas.admin_ticket import (
     ActionMessageResponse,
@@ -65,7 +70,9 @@ def get_ticket_detail_by_id(
 
     if ticket is None:
         raise HTTPException(status_code=404, detail="Ticket tidak ditemukan")
-    
+
+    ensure_ticket_visible_to_user(db=db, ticket_id=ticket_id, current_user=current_user)
+
     return ticket
 
 @router.post(
@@ -105,10 +112,10 @@ def assign_ticket_endpoint(
     ticket_id: str,
     payload: TicketAssginRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(
-        require_roles(RoleName.ADMIN.value, RoleName.HEAD.value)
-    ),
+    current_user: User = Depends(get_current_active_user),
 ):
+    ensure_assign_permission(current_user)
+
     try:
         assign_ticket_technicians(
             db=db,

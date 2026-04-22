@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, require_roles
-from app.core.config import settings
+from app.api.deps import get_db
 from app.core.constants import RoleName
+from app.core.permissions import ensure_technician_only, ensure_ticket_visible_to_user, require_roles
 from app.models.user import User
 from app.schemas.technician import (
     TechnicianActionResponse,
@@ -11,7 +11,11 @@ from app.schemas.technician import (
     TechnicianReverseGeocodeResponse,
     TechnicianTicketDetailResponse,
 )
-from app.services.cloudinary_service import upload_checkin_photo, upload_resolution_video
+from app.services.local_storage_service import (
+    delete_uploaded_file,
+    upload_checkin_photo,
+    upload_resolution_video,
+)
 from app.services.location_service import reverse_geocode_location
 from app.services.technician_service import (
     get_assigned_ticket_detail,
@@ -19,7 +23,7 @@ from app.services.technician_service import (
     submit_checkin,
     submit_resolution,
 )
-from app.utils.file_upload import validate_image_file, validate_video_file
+from app.utils.file_upload import validate_image_upload, validate_video_upload
 
 router = APIRouter(prefix="/technician", tags=["technician"])
 
@@ -50,6 +54,8 @@ def get_my_ticket_detail(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles(RoleName.TECHNICIAN.value)),
 ):
+    ensure_ticket_visible_to_user(db=db, ticket_id=ticket_id, current_user=current_user)
+
     try:
         return get_assigned_ticket_detail(db, ticket_id, current_user)
     except ValueError as exc:
@@ -60,7 +66,7 @@ def get_my_ticket_detail(
 
 
 @router.post("/tickets/{ticket_id}/check-in", response_model=TechnicianActionResponse)
-def check_in_ticket(
+async def check_in_ticket(
     ticket_id: str,
     latitude: float = Form(...),
     longitude: float = Form(...),
@@ -70,11 +76,14 @@ def check_in_ticket(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles(RoleName.TECHNICIAN.value)),
 ):
-    validate_image_file(photo, settings.MAX_IMAGE_UPLOAD_MB)
+    ensure_technician_only(current_user)
+    ensure_ticket_visible_to_user(db=db, ticket_id=ticket_id, current_user=current_user)
+
+    await validate_image_upload(photo)
+    upload_result = await upload_checkin_photo(photo)
 
     try:
-        upload_result = upload_checkin_photo(photo.file, filename=photo.filename)
-        return submit_checkin(
+        response = submit_checkin(
             db=db,
             ticket_id=ticket_id,
             current_user=current_user,
@@ -86,14 +95,18 @@ def check_in_ticket(
             original_filename=photo.filename,
         )
     except ValueError as exc:
+        delete_uploaded_file(upload_result)
         message = str(exc)
         if message == "Ticket tidak ditemukan":
             raise HTTPException(status_code=404, detail=message)
         raise HTTPException(status_code=400, detail=message)
 
+    response["file_url"] = upload_result.get("secure_url")
+    return response
+
 
 @router.post("/tickets/{ticket_id}/resolve", response_model=TechnicianActionResponse)
-def resolve_ticket(
+async def resolve_ticket(
     ticket_id: str,
     latitude: float = Form(...),
     longitude: float = Form(...),
@@ -103,11 +116,14 @@ def resolve_ticket(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles(RoleName.TECHNICIAN.value)),
 ):
-    validate_video_file(video, settings.MAX_VIDEO_UPLOAD_MB)
+    ensure_technician_only(current_user)
+    ensure_ticket_visible_to_user(db=db, ticket_id=ticket_id, current_user=current_user)
+
+    await validate_video_upload(video)
+    upload_result = await upload_resolution_video(video)
 
     try:
-        upload_result = upload_resolution_video(video.file, filename=video.filename)
-        return submit_resolution(
+        response = submit_resolution(
             db=db,
             ticket_id=ticket_id,
             current_user=current_user,
@@ -119,7 +135,11 @@ def resolve_ticket(
             original_filename=video.filename,
         )
     except ValueError as exc:
+        delete_uploaded_file(upload_result)
         message = str(exc)
         if message == "Ticket tidak ditemukan":
             raise HTTPException(status_code=404, detail=message)
         raise HTTPException(status_code=400, detail=message)
+
+    response["file_url"] = upload_result.get("secure_url")
+    return response

@@ -1,0 +1,344 @@
+2026-04-15 14:03:54,567 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 200 OK"
+2026-04-15 14:03:55,054 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+2026-04-15 14:03:55,500 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 200 OK"
+2026-04-15 14:03:55,834 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/dashboard/summary?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=54555831-c45e-4246-9f48-5ab838b0577e "HTTP/1.1 200 OK"
+2026-04-15 14:03:58,436 | INFO | app.core.middleware | request_completed | request_id=5d4a766d13fd406aa208e8276bd5ad3b | method=GET | path=/health | status=200 | duration_ms=3.62
+2026-04-15 14:03:58,437 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-04-15 14:03:58,518 | INFO | app.core.middleware | request_completed | request_id=e325ff8c5a8244798a68c1b10c97e2a5 | method=GET | path=/http-error | status=418 | duration_ms=3.47
+2026-04-15 14:03:58,519 | INFO | httpx | HTTP Request: GET http://testserver/http-error "HTTP/1.1 418 I'm a teapot"
+2026-04-15 14:03:58,600 | INFO | app.core.middleware | request_completed | request_id=86bd8514012649a9bc5597ad9d76847b | method=GET | path=/items/not-a-number | status=422 | duration_ms=2.51
+2026-04-15 14:03:58,601 | INFO | httpx | HTTP Request: GET http://testserver/items/not-a-number "HTTP/1.1 422 Unprocessable Entity"
+2026-04-15 14:03:58,711 | ERROR | app.core.middleware | request_failed | request_id=7210156ce5ec4b508f770c70960d98b3 | method=GET | path=/boom | duration_ms=3.28
+  + Exception Group Traceback (most recent call last):
+  |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_utils.py", line 81, in collapse_excgroups
+  |     yield
+  |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 192, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 799, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "D:\Kresna\Projek\SLA\backend\app\core\middleware.py", line 53, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |                                    ~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    |     raise exc
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "D:\Kresna\Projek\SLA\backend\app\core\middleware.py", line 147, in dispatch
+    |     return await call_next(request)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    |     await route.handle(scope, receive, send)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    |     await self.app(scope, receive, send)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     ...<3 lines>...
+    |     )
+    |     ^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    |     return await run_in_threadpool(dependant.call, **values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    |     return await anyio.to_thread.run_sync(func)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    |     return await future
+    |            ^^^^^^^^^^^^
+    |   File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    |     result = context.run(func, *args)
+    |   File "D:\Kresna\Projek\SLA\backend\tests\test_main.py", line 126, in boom
+    |     raise ValueError("unexpected failure")
+    | ValueError: unexpected failure
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Kresna\Projek\SLA\backend\app\core\middleware.py", line 53, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Kresna\Projek\SLA\backend\app\core\middleware.py", line 147, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "D:\Kresna\Projek\SLA\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "D:\Kresna\Projek\SLA\backend\tests\test_main.py", line 126, in boom
+    raise ValueError("unexpected failure")
+ValueError: unexpected failure
+2026-04-15 14:03:58,888 | INFO | httpx | HTTP Request: GET http://testserver/boom "HTTP/1.1 500 Internal Server Error"
+2026-04-15 14:03:59,354 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 14:03:59,374 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-04-15 14:03:59,392 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 200 OK"
+2026-04-15 14:03:59,396 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 200 OK"
+2026-04-15 14:03:59,399 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 429 Too Many Requests"
+2026-04-15 14:03:59,949 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/notifications/unread "HTTP/1.1 200 OK"
+2026-04-15 14:04:00,207 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/notifications/75f90abc-e9a3-422b-a889-1aa18a7115b8/read "HTTP/1.1 200 OK"
+2026-04-15 14:04:00,794 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/dashboard/summary "HTTP/1.1 403 Forbidden"
+2026-04-15 14:04:01,076 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/2a9f755a-0aa0-4bd6-9e80-b16f63797020/check-in "HTTP/1.1 403 Forbidden"
+2026-04-15 14:04:01,359 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/c85e2b74-c614-43de-a51b-e55984b8826a/check-in "HTTP/1.1 400 Bad Request"
+2026-04-15 14:04:01,794 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 201 Created"
+2026-04-15 14:04:02,391 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/reports/tickets/export?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=0d1ff5cf-a34d-476a-aa0a-8600921cfa40 "HTTP/1.1 200 OK"
+2026-04-15 14:04:03,724 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/tickets?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=bc780709-6e27-4b97-bd09-527462b017dd&skip=0&limit=20 "HTTP/1.1 200 OK"
+2026-04-15 14:04:03,987 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/tickets?q=Rina "HTTP/1.1 200 OK"
+2026-04-15 14:04:50,556 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 200 OK"
+2026-04-15 14:04:50,968 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+2026-04-15 14:04:51,485 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 200 OK"
+2026-04-15 14:04:51,786 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/dashboard/summary?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=d8424dcb-46ec-4613-990e-efa472ffcb83 "HTTP/1.1 200 OK"
+2026-04-15 14:04:54,378 | INFO | app.core.middleware | request_completed | request_id=c9f03511df6543d48354ab9fa0fd7d22 | method=GET | path=/health | status=200 | duration_ms=12.78
+2026-04-15 14:04:54,380 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-04-15 14:04:54,474 | INFO | app.core.middleware | request_completed | request_id=22f6e663408849f0a3c1f2e4b8d96e27 | method=GET | path=/http-error | status=418 | duration_ms=3.3
+2026-04-15 14:04:54,475 | INFO | httpx | HTTP Request: GET http://testserver/http-error "HTTP/1.1 418 I'm a teapot"
+2026-04-15 14:04:54,564 | INFO | app.core.middleware | request_completed | request_id=6525238c530b4a8299e48e67084b3021 | method=GET | path=/items/not-a-number | status=422 | duration_ms=1.82
+2026-04-15 14:04:54,566 | INFO | httpx | HTTP Request: GET http://testserver/items/not-a-number "HTTP/1.1 422 Unprocessable Entity"
+2026-04-15 14:04:54,657 | INFO | httpx | HTTP Request: GET http://testserver/boom "HTTP/1.1 500 Internal Server Error"
+2026-04-15 14:04:55,431 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 14:04:55,449 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-04-15 14:04:55,468 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 200 OK"
+2026-04-15 14:04:55,472 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 200 OK"
+2026-04-15 14:04:55,475 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 429 Too Many Requests"
+2026-04-15 14:04:56,065 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/notifications/unread "HTTP/1.1 200 OK"
+2026-04-15 14:04:56,269 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/notifications/f9517486-b5d2-48fa-be89-149894a95092/read "HTTP/1.1 200 OK"
+2026-04-15 14:04:56,873 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/dashboard/summary "HTTP/1.1 403 Forbidden"
+2026-04-15 14:04:57,138 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/b38656e6-a1c5-4358-babf-62c15c211c59/check-in "HTTP/1.1 403 Forbidden"
+2026-04-15 14:04:57,378 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/7a7160a7-0244-477c-a09c-e1044c92151b/check-in "HTTP/1.1 400 Bad Request"
+2026-04-15 14:04:57,816 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 201 Created"
+2026-04-15 14:04:58,339 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/reports/tickets/export?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=8d198940-64ad-460f-bf81-2a86150d233c "HTTP/1.1 200 OK"
+2026-04-15 14:04:59,654 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/tickets?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=168faee5-408b-406e-9eff-1fb6c47051ab&skip=0&limit=20 "HTTP/1.1 200 OK"
+2026-04-15 14:04:59,914 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/tickets?q=Rina "HTTP/1.1 200 OK"
+2026-04-15 14:05:31,556 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 200 OK"
+2026-04-15 14:05:31,976 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+2026-04-15 14:05:32,400 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 200 OK"
+2026-04-15 14:05:32,730 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/dashboard/summary?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=eeaca7e2-1a47-412d-96c8-3a1eadb51fb4 "HTTP/1.1 200 OK"
+2026-04-15 14:05:35,321 | INFO | app.core.middleware | request_completed | request_id=55cc525b95c945f6909f4701a7203573 | method=GET | path=/health | status=200 | duration_ms=13.23
+2026-04-15 14:05:35,322 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-04-15 14:05:35,408 | INFO | app.core.middleware | request_completed | request_id=5ff5a434c4bf4158ace672bdd12dd401 | method=GET | path=/http-error | status=418 | duration_ms=3.63
+2026-04-15 14:05:35,409 | INFO | httpx | HTTP Request: GET http://testserver/http-error "HTTP/1.1 418 I'm a teapot"
+2026-04-15 14:05:35,497 | INFO | app.core.middleware | request_completed | request_id=4d02717dd79f4b65ac60718535af51be | method=GET | path=/items/not-a-number | status=422 | duration_ms=1.47
+2026-04-15 14:05:35,498 | INFO | httpx | HTTP Request: GET http://testserver/items/not-a-number "HTTP/1.1 422 Unprocessable Entity"
+2026-04-15 14:05:35,587 | INFO | httpx | HTTP Request: GET http://testserver/boom "HTTP/1.1 500 Internal Server Error"
+2026-04-15 14:05:35,656 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 14:05:35,682 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-04-15 14:05:35,704 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 200 OK"
+2026-04-15 14:05:35,710 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 200 OK"
+2026-04-15 14:05:35,714 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 429 Too Many Requests"
+2026-04-15 14:05:36,341 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/notifications/unread "HTTP/1.1 200 OK"
+2026-04-15 14:05:36,639 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/notifications/d563c753-74fd-4b60-96fe-d782014b1eb5/read "HTTP/1.1 200 OK"
+2026-04-15 14:05:37,299 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/dashboard/summary "HTTP/1.1 403 Forbidden"
+2026-04-15 14:05:37,585 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/c25af561-e48d-4e7e-afde-4bb92d0136ba/check-in "HTTP/1.1 403 Forbidden"
+2026-04-15 14:05:37,852 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/efc127cf-e0de-448c-9115-9dc11d0dcb8d/check-in "HTTP/1.1 400 Bad Request"
+2026-04-15 14:05:38,234 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/public/tickets "HTTP/1.1 201 Created"
+2026-04-15 14:05:38,795 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/reports/tickets/export?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=c79f65b4-5417-4e35-a74a-4770d648c2eb "HTTP/1.1 200 OK"
+2026-04-15 14:05:40,056 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/tickets?status=assigned&category=Internet&date_from=2026-04-13&date_to=2026-04-13&technician_id=8c64ca9d-0b69-4c8b-b753-0f4d17171ce2&skip=0&limit=20 "HTTP/1.1 200 OK"
+2026-04-15 14:05:40,298 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/tickets?q=Rina "HTTP/1.1 200 OK"
+2026-04-16 08:34:53,002 | INFO | app.main | Startup init_db completed
+2026-04-17 11:02:24,231 | INFO | app.main | Startup init_db completed
+2026-04-17 11:18:30,300 | INFO | app.core.middleware | request_completed | request_id=11dcf61ef3864a7bb5172210d82ecf68 | method=POST | path=/api/v1/auth/login | status=200 | duration_ms=914.28
+2026-04-17 11:18:31,605 | INFO | app.core.middleware | request_completed | request_id=0a2c0804079641f1a771eafee9324808 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1147.81
+2026-04-17 11:18:32,223 | INFO | app.core.middleware | request_completed | request_id=6be55fc40e3b4f3d9f6dcece6dca204e | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=1719.71
+2026-04-17 11:18:33,045 | INFO | app.core.middleware | request_completed | request_id=64434e9d28514c73ab8b5d2aa70e3a66 | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=817.22
+2026-04-17 11:18:34,161 | INFO | app.core.middleware | request_completed | request_id=972443acfcfe4a02917f35a595d90a97 | method=GET | path=/api/v1/dashboard/summary | status=200 | duration_ms=3658.4
+2026-04-17 11:18:35,703 | INFO | app.core.middleware | request_completed | request_id=5368ed315dc24fd896de1a3658da4a4e | method=GET | path=/api/v1/dashboard/summary | status=200 | duration_ms=1537.71
+2026-04-17 11:18:42,465 | INFO | app.core.middleware | request_completed | request_id=fac4d6dda2404c0b9ee0de23145efb62 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=834.52
+2026-04-17 11:18:43,393 | INFO | app.core.middleware | request_completed | request_id=03dc230ad05942eca00eb97e7f903d3a | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=682.15
+2026-04-17 11:18:43,853 | INFO | app.core.middleware | request_completed | request_id=99ebba8411ec4fa784cef0b8be198b48 | method=GET | path=/api/v1/tickets | status=200 | duration_ms=1135.38
+2026-04-17 11:18:44,103 | INFO | app.core.middleware | request_completed | request_id=4d82cf55a7f94066ba3e5725d1a68115 | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=705.99
+2026-04-17 11:18:45,160 | INFO | app.core.middleware | request_completed | request_id=98906579affb406bb29fb17c4ca87719 | method=GET | path=/api/v1/tickets | status=200 | duration_ms=1303.04
+2026-04-17 11:18:53,370 | INFO | app.core.middleware | request_completed | request_id=0bf3ef6cbd684c9f9080277682e57349 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=875.32
+2026-04-17 11:18:56,488 | INFO | app.core.middleware | request_completed | request_id=1028c97b5c9f443ea1484f9771e00d20 | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=915.03
+2026-04-17 11:18:57,010 | INFO | app.core.middleware | request_completed | request_id=e2bba7daf0744169a487d6f2257a0fc2 | method=GET | path=/api/v1/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a | status=200 | duration_ms=1430.71
+2026-04-17 11:18:57,303 | INFO | app.core.middleware | request_completed | request_id=9620617c14914fe2964cb45bddfbb56a | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=811.76
+2026-04-17 11:18:58,232 | INFO | app.core.middleware | request_completed | request_id=330b7e397a934a28897ff240f6c96df9 | method=GET | path=/api/v1/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a | status=200 | duration_ms=1218.1
+2026-04-17 11:19:04,369 | INFO | app.core.middleware | request_completed | request_id=f8bd076787144803b1728c2579f30060 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=975.76
+2026-04-17 11:19:06,237 | INFO | app.core.middleware | request_completed | request_id=66dbfbd5bc7c49af8b92ce295125bcad | method=POST | path=/api/v1/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a/respond | status=200 | duration_ms=1201.44
+2026-04-17 11:19:06,942 | INFO | app.core.middleware | request_completed | request_id=950a870aea3b4ac28d6475dde4a6a0c9 | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=683.44
+2026-04-17 11:19:07,850 | INFO | app.core.middleware | request_completed | request_id=a06471ebb67840ac8c85c0e030a9f5b6 | method=GET | path=/api/v1/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a | status=200 | duration_ms=1596.02
+2026-04-17 11:19:15,427 | INFO | app.core.middleware | request_completed | request_id=712e0b30dd45425584fd656bbf70ed08 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1038.58
+2026-04-17 11:19:21,163 | INFO | app.core.middleware | request_completed | request_id=218e37e3fde342b5825f3f81b2600ed2 | method=POST | path=/api/v1/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a/assign | status=200 | duration_ms=2876.18
+2026-04-17 11:19:21,988 | INFO | app.core.middleware | request_completed | request_id=6f09b4bd83ba4cce81a66d826f084bbf | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=805.63
+2026-04-17 11:19:22,823 | INFO | app.core.middleware | request_completed | request_id=5934ae5592674e979d007c529900732e | method=GET | path=/api/v1/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a | status=200 | duration_ms=1645.18
+2026-04-17 11:19:26,181 | INFO | app.core.middleware | request_completed | request_id=92221e8c24044205a1da11f65c5b63ca | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=740.95
+2026-04-17 11:19:37,389 | INFO | app.core.middleware | request_completed | request_id=8a1a210ab73849e28f36ec13f9fdbc99 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=790.11
+2026-04-17 11:19:47,380 | INFO | app.core.middleware | request_completed | request_id=6a82ac9fc51d434cbe0d9b9a549a5906 | method=POST | path=/api/v1/auth/login | status=200 | duration_ms=806.74
+2026-04-17 11:19:48,408 | INFO | app.core.middleware | request_completed | request_id=559a5f14f6c34ebba79cd819f15dcd42 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=935.29
+2026-04-17 11:19:48,600 | INFO | app.core.middleware | request_completed | request_id=99d4ca45b14e42e4913eee4e124c5f4c | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=993.83
+2026-04-17 11:19:48,603 | INFO | app.core.middleware | request_completed | request_id=d7c57e6167a74280888f5c1cc82a268a | method=GET | path=/api/v1/technician/tickets/assigned | status=200 | duration_ms=1128.28
+2026-04-17 11:19:49,999 | INFO | app.core.middleware | request_completed | request_id=30db4457cc594310a31601890d401dff | method=GET | path=/api/v1/technician/tickets/assigned | status=200 | duration_ms=1391.74
+2026-04-17 11:19:59,058 | INFO | app.core.middleware | request_completed | request_id=152ee09690cb4d36bd3bd974cb28bbf1 | method=GET | path=/api/v1/technician/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a | status=200 | duration_ms=1959.77
+2026-04-17 11:19:59,481 | INFO | app.core.middleware | request_completed | request_id=83144ba970dd45eea4b0ec47cb28cc96 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1051.93
+2026-04-17 11:20:00,416 | INFO | app.core.middleware | request_completed | request_id=64eac43a0fa84c8c92d67b334d8e5758 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=803.42
+2026-04-17 11:20:00,418 | INFO | app.core.middleware | request_completed | request_id=541d345e740040b39ae7cf91995b5db3 | method=GET | path=/api/v1/technician/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a | status=200 | duration_ms=1355.91
+2026-04-17 11:20:10,621 | INFO | app.core.middleware | request_completed | request_id=9d97a10e1e2b43f0888e3996bc42d489 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1111.93
+2026-04-17 11:20:11,839 | INFO | app.core.middleware | request_completed | request_id=1083d7263b03462a9b9e40dc93528330 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1230.49
+2026-04-17 11:20:21,299 | INFO | app.core.middleware | request_completed | request_id=16f676fc737a4bf68efe448634389429 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=660.61
+2026-04-17 11:20:22,089 | INFO | httpx | HTTP Request: GET https://api.geoapify.com/v1/geocode/reverse?lat=-8.606567&lon=115.184329&format=json&limit=1&lang=id&apiKey=12b3f3274d0c48fb8b813572b4ffadd7 "HTTP/1.1 200 OK"
+2026-04-17 11:20:22,093 | INFO | app.core.middleware | request_completed | request_id=7ba2bb47a82045d08485975ed5d63a7c | method=GET | path=/api/v1/technician/location/reverse-geocode | status=200 | duration_ms=4353.67
+2026-04-17 11:20:23,728 | INFO | app.core.middleware | request_completed | request_id=847f6e3582f1445194ce8ceeba0de501 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1122.85
+2026-04-17 11:20:32,536 | INFO | app.core.middleware | request_completed | request_id=adf436f35d8a4733add4fb3581251098 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1221.74
+2026-04-17 11:20:35,607 | INFO | app.core.middleware | request_completed | request_id=a11baebbc5dc44d4a7d414db688f0252 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1004.75
+2026-04-17 11:20:43,697 | INFO | app.core.middleware | request_completed | request_id=21b10cbdc8184ebcad4e3ad4c4c78fb5 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1150.27
+2026-04-17 11:20:43,699 | INFO | app.core.middleware | request_completed | request_id=34cfcc2347b5405ab088b520a8d678d7 | method=POST | path=/api/v1/notifications/6ac3e7cb-0e6e-4a5d-b628-bac2abe2ef3d/read | status=200 | duration_ms=1763.66
+2026-04-17 11:20:44,623 | INFO | app.core.middleware | request_completed | request_id=3e73e4c7ed89488db2b084c590ea233c | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=909.16
+2026-04-17 11:20:45,476 | INFO | app.core.middleware | request_completed | request_id=7d5b05fe6dbc4169bb89f5afa0d555b9 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=775.7
+2026-04-17 11:20:46,973 | INFO | app.core.middleware | request_completed | request_id=0a35fb6bc2844c218b6be0be2366e52e | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1106.43
+2026-04-17 11:20:56,503 | INFO | app.core.middleware | request_completed | request_id=47bc71a2ae6e4fd3b0432e1f3162cd0f | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=893.3
+2026-04-17 11:20:58,032 | INFO | app.core.middleware | request_completed | request_id=9322fef1e2554052b3853a02a7ccb355 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1041.31
+2026-04-17 11:20:58,441 | INFO | app.core.middleware | request_completed | request_id=7c15eaf089974d0dbd7c65c502167503 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1114.75
+2026-04-17 11:21:09,663 | INFO | app.core.middleware | request_completed | request_id=bbbf3028c33d4d36ab292d6ee7811b9e | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1062.27
+2026-04-17 11:21:09,665 | INFO | app.core.middleware | request_completed | request_id=447c592325d44181b9d0d43716f29ddb | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1062.43
+2026-04-17 11:21:21,384 | INFO | app.core.middleware | request_completed | request_id=7f06902e3a544503a6275c0d6c830dac | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=779.19
+2026-04-17 11:21:21,388 | INFO | app.core.middleware | request_completed | request_id=7201c61036ac472a9caea7e22081550b | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=786.16
+2026-04-17 11:21:32,337 | INFO | app.core.middleware | request_completed | request_id=deb51fe89df74ca4a854eebbb7eb02e1 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=733.18
+2026-04-17 11:21:32,339 | INFO | app.core.middleware | request_completed | request_id=51b64f58958d41a4b71679672f36d90e | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=737.01
+2026-04-17 11:21:43,299 | INFO | app.core.middleware | request_completed | request_id=9ee07f164e4e449e850fe648ee6cdf08 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1042.13
+2026-04-17 11:21:43,301 | INFO | app.core.middleware | request_completed | request_id=25d426db233548b985bdbd23e6165cf2 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1043.11
+2026-04-17 11:44:47,376 | INFO | app.main | Startup init_db completed
+2026-04-17 11:45:12,783 | INFO | app.core.middleware | request_completed | request_id=62ad2aa0fe11477cb08d9b6357e974d9 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=2603.88
+2026-04-17 11:45:13,490 | INFO | app.core.middleware | request_completed | request_id=f8140ac18361486db461959b043c9e9a | method=GET | path=/api/v1/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a | status=200 | duration_ms=3307.56
+2026-04-17 11:45:13,492 | INFO | app.core.middleware | request_completed | request_id=07b739a6b4de41e1ad79fd520112b0ff | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=3309.4
+2026-04-17 11:45:14,315 | INFO | app.core.middleware | request_completed | request_id=1386ba056d144f73b98fc4b7d3ec7184 | method=GET | path=/api/v1/users/technicians | status=200 | duration_ms=818.85
+2026-04-17 11:45:16,463 | INFO | app.core.middleware | request_completed | request_id=7b13a654740d4360b70cf2bdab383358 | method=GET | path=/api/v1/tickets/ce1eab30-8889-49ed-8f14-1e52a394a07a | status=200 | duration_ms=2967.73
+2026-04-17 11:45:23,827 | INFO | app.core.middleware | request_completed | request_id=870f472202714a7bb45b3f75a8778c56 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1012.31
+2026-04-17 11:45:35,203 | INFO | app.core.middleware | request_completed | request_id=96db21826f0245129230893a5f1bed75 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=903.13
+2026-04-17 11:45:46,420 | INFO | app.core.middleware | request_completed | request_id=1833f86934584b3693cd653bda255723 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1125.75
+2026-04-17 11:45:58,306 | INFO | app.core.middleware | request_completed | request_id=220bd3d8863849799293d5832879a25a | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1001.18
+2026-04-17 11:46:10,421 | INFO | app.core.middleware | request_completed | request_id=f522c77114504918829888647c186dde | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1117.3
+2026-04-17 11:46:22,301 | INFO | app.core.middleware | request_completed | request_id=e026f2a0cc3545ee9cc136a8ef7dda63 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=997.14
+2026-04-17 11:46:34,381 | INFO | app.core.middleware | request_completed | request_id=02d091126c614a49865f7da3be0d43fb | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1081.67
+2026-04-17 11:46:46,141 | INFO | app.core.middleware | request_completed | request_id=02acd397ea7e485b8bb9d1ae8f9c4177 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=841.61
+2026-04-17 11:46:57,421 | INFO | app.core.middleware | request_completed | request_id=78f6240badcf4f00af82475942178984 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1121.21
+2026-04-17 11:47:09,101 | INFO | app.core.middleware | request_completed | request_id=fa4a9b0ac2e54e6cbc012b9c27d87bf1 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=787.84
+2026-04-17 11:47:20,284 | INFO | app.core.middleware | request_completed | request_id=6588756a4adc452398351d3cae4dde56 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=982.56
+2026-04-17 11:47:32,439 | INFO | app.core.middleware | request_completed | request_id=06d4eb1a90684f4ca3a379e1a5e7cfd4 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1144.72
+2026-04-17 11:47:44,421 | INFO | app.core.middleware | request_completed | request_id=d9c6702740b74cb380b567245521ab28 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1117.29
+2026-04-17 11:47:56,608 | INFO | app.core.middleware | request_completed | request_id=d68ef9a45c8e4a89887dbd0065dac5e7 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1302.76
+2026-04-17 11:48:08,282 | INFO | app.core.middleware | request_completed | request_id=9b4708579d8f4a0483c92d04cc62f3b9 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=976.55
+2026-04-17 11:48:20,365 | INFO | app.core.middleware | request_completed | request_id=9261e8894daa493ab9913d5c45939152 | method=GET | path=/api/v1/notifications/unread | status=200 | duration_ms=1020.04
+2026-04-17 11:48:31,309 | INFO | app.core.middleware | request_completed | request_id=ac9e0653e1d0406c8b0d834ca6b63a0c | method=GET | path=/api/v1/notifications/unread | status=401 | duration_ms=3.58
+2026-04-17 12:02:41,113 | INFO | app.main | Startup init_db completed
+2026-04-17 15:52:19,120 | INFO | app.core.middleware | request_completed | request_id=a19f692556b948c5a8dd9b399dfa311f | method=GET | path=/health | status=200 | duration_ms=4.17
+2026-04-17 15:52:19,121 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-04-17 15:52:19,210 | INFO | app.core.middleware | request_completed | request_id=48658ac6e7854427af281bcb19286aeb | method=GET | path=/http-error | status=418 | duration_ms=6.03
+2026-04-17 15:52:19,211 | INFO | httpx | HTTP Request: GET http://testserver/http-error "HTTP/1.1 418 I'm a teapot"
+2026-04-17 15:52:19,282 | INFO | app.core.middleware | request_completed | request_id=12bae3cbbd66473d9ac9834871cb51d7 | method=GET | path=/items/not-a-number | status=422 | duration_ms=2.74
+2026-04-17 15:52:19,283 | INFO | httpx | HTTP Request: GET http://testserver/items/not-a-number "HTTP/1.1 422 Unprocessable Entity"
+2026-04-17 15:52:19,493 | INFO | httpx | HTTP Request: GET http://testserver/boom "HTTP/1.1 500 Internal Server Error"
+2026-04-17 15:52:19,583 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 307 Temporary Redirect"
+2026-04-17 15:52:19,679 | INFO | app.core.middleware | request_completed | request_id=105ce34996984b9cb00878cb25655ad2 | method=GET | path=/uploads/proof.txt | status=200 | duration_ms=5.72
+2026-04-17 15:52:19,682 | INFO | httpx | HTTP Request: GET http://testserver/uploads/proof.txt "HTTP/1.1 200 OK"
+2026-04-17 15:52:20,443 | INFO | httpx | HTTP Request: GET http://testserver/api/v1/dashboard/summary "HTTP/1.1 403 Forbidden"
+2026-04-17 15:52:20,714 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/7dd1e40a-1a47-4607-a2d0-a89289c389e9/check-in "HTTP/1.1 403 Forbidden"
+2026-04-17 15:52:20,933 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/de1980f2-6cfe-4e79-9ef8-d839ff37d4d7/check-in "HTTP/1.1 400 Bad Request"
+2026-04-17 15:52:21,327 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/9d8e464c-9494-405e-bb2e-af26a06d55cf/check-in "HTTP/1.1 200 OK"
+2026-04-17 15:52:21,657 | INFO | httpx | HTTP Request: POST http://testserver/api/v1/technician/tickets/3fe29e6b-88ec-4907-8ac7-fdb57d0fef64/resolve "HTTP/1.1 200 OK"

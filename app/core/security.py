@@ -25,4 +25,4 @@ def create_access_token(subject: str | int | UUID, expires_delta: timedelta | No
         "sub": str(subject),
         "exp": expire,
     }
-    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.ALGORITHM)

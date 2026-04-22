@@ -3,8 +3,8 @@ from datetime import date
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, require_roles
-from app.core.constants import RoleName
+from app.api.deps import get_current_active_user, get_db
+from app.core.permissions import ensure_dashboard_permission
 from app.models.user import User
 from app.schemas.admin_ticket import DashboardSummaryResponse
 from app.services.dashboard_service import get_dashboard_summary
@@ -20,8 +20,10 @@ def dashboard_summary(
     date_to: date | None = Query(default=None),
     technician_id: str | None = Query(default=None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(RoleName.ADMIN.value, RoleName.HEAD.value)),
+    current_user: User = Depends(get_current_active_user),
 ):
+    ensure_dashboard_permission(current_user)
+
     return get_dashboard_summary(
         db=db,
         status=status,

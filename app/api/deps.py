@@ -11,7 +11,7 @@ from app.core.config import settings
 from app.db.session import SessionLocal
 from app.models.user import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/auth/login")
 
 
 def get_db():
@@ -33,7 +33,7 @@ def get_current_user(
     )
 
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.ALGORITHM])
         user_id = payload.get("sub")
         if user_id is None:
             raise credentials_exception
@@ -57,9 +57,6 @@ def get_current_active_user(current_user: User = Depends(get_current_user)) -> U
 
 
 def require_roles(*allowed_roles: str):
-    def dependency(current_user: User = Depends(get_current_active_user)) -> User:
-        if current_user.role.name not in allowed_roles:
-            raise HTTPException(status_code=403, detail="Akses ditolak")
-        return current_user
+    from app.core.permissions import require_roles as permission_require_roles
 
-    return dependency
+    return permission_require_roles(*allowed_roles)
