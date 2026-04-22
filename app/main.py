@@ -87,6 +87,7 @@ def create_app() -> FastAPI:
                     "created_roles": summary.created_roles,
                     "created_users": summary.created_users,
                     "updated_users": summary.updated_users,
+                    "patched_ticket_schema": getattr(summary, "patched_ticket_schema", False),
                 },
             )
         except Exception:

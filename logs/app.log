@@ -502,3 +502,13 @@ ValueError: unexpected failure
 2026-04-22 14:47:27,833 | INFO | httpx | HTTP Request: GET https://testserver/api/v1/files/blob/checkins/2026/04/22/c399f82014e04b3880769225ebba2177.jpg "HTTP/1.1 400 Bad Request"
 2026-04-22 14:47:29,687 | INFO | httpx | HTTP Request: POST https://vercel.com/api/blob/delete "HTTP/1.1 200 OK"
 2026-04-22 14:47:31,239 | INFO | httpx | HTTP Request: POST https://telemetry.vercel.com/api/vercel-py/v1/events "HTTP/1.1 204 No Content"
+2026-04-22 15:53:28,101 | INFO | app.core.middleware | request_completed | request_id=d27491366c1e48889797ad8678e1d941 | method=GET | path=/health | status=200 | duration_ms=3.22
+2026-04-22 15:53:28,103 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-04-22 15:53:28,190 | INFO | app.core.middleware | request_completed | request_id=aece84573aa44f128342fa8f5295e869 | method=GET | path=/http-error | status=418 | duration_ms=2.65
+2026-04-22 15:53:28,192 | INFO | httpx | HTTP Request: GET http://testserver/http-error "HTTP/1.1 418 I'm a teapot"
+2026-04-22 15:53:28,365 | INFO | app.core.middleware | request_completed | request_id=581af074f0704da59e2747b88a049848 | method=GET | path=/items/not-a-number | status=422 | duration_ms=1.51
+2026-04-22 15:53:28,366 | INFO | httpx | HTTP Request: GET http://testserver/items/not-a-number "HTTP/1.1 422 Unprocessable Entity"
+2026-04-22 15:53:28,446 | INFO | httpx | HTTP Request: GET http://testserver/boom "HTTP/1.1 500 Internal Server Error"
+2026-04-22 15:53:28,511 | INFO | httpx | HTTP Request: GET http://testserver/health "HTTP/1.1 307 Temporary Redirect"
+2026-04-22 15:53:28,619 | INFO | app.core.middleware | request_completed | request_id=457d0a4a39854d639bc1ac9190d0defc | method=GET | path=/uploads/proof.txt | status=200 | duration_ms=3.14
+2026-04-22 15:53:28,622 | INFO | httpx | HTTP Request: GET http://testserver/uploads/proof.txt "HTTP/1.1 200 OK"

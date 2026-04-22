@@ -1,7 +1,7 @@
 from collections.abc import Generator
 
 import pytest
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, inspect, select, text
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
@@ -9,7 +9,7 @@ from app.core.config import settings
 from app.core.constants import RoleName
 from app.core.security import get_password_hash, verify_password
 from app.db.base import Base
-from app.db.init_db import SEED_USERS, seed_roles, seed_users
+from app.db.init_db import SEED_USERS, ensure_ticket_schema, seed_roles, seed_users
 from app.models.role import Role
 from app.models.user import User
 
@@ -146,3 +146,37 @@ def test_seed_users_is_idempotent_when_run_again(db_session: Session) -> None:
     assert created_roles == 0
     assert created_users == 0
     assert updated_users == 0
+
+
+def test_ensure_ticket_schema_adds_missing_item_name_column() -> None:
+    engine = create_engine(
+        TEST_DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    testing_session_local = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+
+    with engine.begin() as connection:
+        connection.execute(
+            text(
+                "CREATE TABLE tickets ("
+                "id VARCHAR(36) PRIMARY KEY, "
+                "ticket_code VARCHAR(50) NOT NULL)"
+            )
+        )
+
+    session = testing_session_local()
+    try:
+        changed = ensure_ticket_schema(session)
+        session.commit()
+
+        assert changed is True
+        column_names = {column["name"] for column in inspect(engine).get_columns("tickets")}
+        assert "item_name" in column_names
+
+        changed_again = ensure_ticket_schema(session)
+        assert changed_again is False
+    finally:
+        session.close()
+        Base.metadata.drop_all(bind=engine)
+        engine.dispose()

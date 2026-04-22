@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from sqlalchemy import func, select
+from sqlalchemy import func, inspect, select, text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -25,6 +26,7 @@ class SeedSummary:
     created_roles: int
     created_users: int
     updated_users: int
+    patched_ticket_schema: bool = False
 
 
 SEED_USERS: tuple[SeedUser, ...] = (
@@ -129,9 +131,62 @@ def seed_users(db: Session, roles_by_name: dict[str, Role]) -> tuple[int, int]:
     return created_users, updated_users
 
 
+def _has_column(db: Session, table_name: str, column_name: str) -> bool:
+    bind = db.get_bind()
+    if bind is None:
+        return False
+
+    inspector = inspect(bind)
+    if table_name not in set(inspector.get_table_names()):
+        return False
+
+    return column_name in {column["name"] for column in inspector.get_columns(table_name)}
+
+
+def ensure_ticket_schema(db: Session) -> bool:
+    bind = db.get_bind()
+    if bind is None:
+        return False
+
+    inspector = inspect(bind)
+    if "tickets" not in set(inspector.get_table_names()):
+        return False
+
+    if _has_column(db, "tickets", "item_name"):
+        return False
+
+    try:
+        db.execute(
+            text(
+                "ALTER TABLE tickets "
+                "ADD COLUMN item_name VARCHAR(150) NOT NULL DEFAULT ''"
+            )
+        )
+    except SQLAlchemyError:
+        # Bisa terjadi jika instance lain sudah lebih dulu menambahkan kolom ini.
+        if _has_column(db, "tickets", "item_name"):
+            return False
+        raise
+
+    if bind.dialect.name in {"postgresql", "mysql"}:
+        try:
+            db.execute(
+                text(
+                    "ALTER TABLE tickets "
+                    "ALTER COLUMN item_name DROP DEFAULT"
+                )
+            )
+        except SQLAlchemyError:
+            # Default kosong tetap aman dipakai; ini hanya merapikan schema.
+            pass
+
+    return True
+
+
 def init_db() -> SeedSummary:
     db = SessionLocal()
     try:
+        patched_ticket_schema = ensure_ticket_schema(db)
         roles_by_name, created_roles = seed_roles(db)
         created_users, updated_users = seed_users(db, roles_by_name)
         db.commit()
@@ -139,6 +194,7 @@ def init_db() -> SeedSummary:
             created_roles=created_roles,
             created_users=created_users,
             updated_users=updated_users,
+            patched_ticket_schema=patched_ticket_schema,
         )
     except Exception:
         db.rollback()
